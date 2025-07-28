@@ -1,0 +1,26 @@
+# MPC Planner Configuration for Static Obstacle Detector
+
+# Static obstacle detection method
+use_static_detector: true  # Set to false to use traditional voxel clustering
+
+# MPC Planning parameters
+horizon: 25  # 减小预测时域以提高求解速度
+z_range_min: 0.9
+z_range_max: 1.2
+static_safety_dist: 0.4  # 增大静态安全距离以提高稳定性
+dynamic_safety_dist: 0.6
+static_constraint_slack_ratio: 0.01  # 进一步增大静态松弛变量
+dynamic_constraint_slack_ratio: 0.2  # 增大动态松弛变量
+
+# Clustering params
+cloud_res: 0.2
+local_cloud_region_x: 5.0
+local_cloud_region_y: 2.0
+ground_height: 0.4
+ceiling_height: 2.0
+
+# Static detector parameters
+static_detector:
+  detection_range: 10.0  # 减小检测范围以减少障碍物数量
+  service_timeout: 1.0
+  fallback_to_clustering: true 

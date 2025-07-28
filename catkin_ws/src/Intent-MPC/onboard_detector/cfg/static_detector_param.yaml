@@ -1,0 +1,32 @@
+# Static Obstacle Detector Configuration
+
+# Detection parameters
+static_detector:
+  detection_range: 5.0               # Maximum detection range in meters
+  default_safety_distance: 0.5       # Default safety distance for obstacles
+  default_cost_weight: 1.0           # Default cost weight for path planning
+  robot_frame: "map"                 # Coordinate frame
+  use_detailed_geometry: false       # Use Gazebo services for detailed geometry (slower)
+  
+  # Topics
+  odom_topic: "/CERLAB/quadcopter/odom"
+  
+  # Model filtering
+  exclude_models:
+    - "ground_plane"
+    - "quadcopter" 
+    - "person"
+    - "dynamic_box"
+    - "dynamic_cylinder"
+    - "unit_sphere"
+    - "wall"
+    - "corridor"
+    - "building"
+    - "floor"
+    - "ceiling"
+    - "corridor"
+    
+  include_patterns:
+    - "box"  # 通用box模式，匹配所有包含"box"的模型
+    - "cylinder"  # 通用cylinder模式
+    - "obstacle"  # 通用obstacle模式 

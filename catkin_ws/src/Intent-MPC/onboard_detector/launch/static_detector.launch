@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="config_file" default="$(find onboard_detector)/cfg/static_detector_param.yaml"/>
+    
+    <!-- Load configuration parameters -->
+    <rosparam file="$(arg config_file)" command="load"/>
+    
+    <!-- Launch static obstacle detector node -->
+    <node name="static_obstacle_detector" pkg="onboard_detector" type="static_detector_node" output="screen">
+        <remap from="/gazebo/model_states" to="/gazebo/model_states"/>
+    </node>
+    
+    <!-- Optional: Launch RViz for visualization -->
+    <arg name="show_rviz" default="false"/>
+    <node if="$(arg show_rviz)" name="rviz_static_detector" pkg="rviz" type="rviz" 
+          args="-d $(find onboard_detector)/rviz/static_detector.rviz" output="screen"/>
+</launch> 

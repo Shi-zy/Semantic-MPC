@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="world_file" default="$(find uav_simulator)/worlds/corridor/corridor_dynamic_9.world"/>
+    <arg name="show_rviz" default="true"/>
+    
+    <!-- 启动Gazebo仿真环境 -->
+    <include file="$(find uav_simulator)/launch/start.launch">
+      
+    </include>
+    
+    <!-- 启动静态障碍物检测器 -->
+    <node name="static_detector" pkg="onboard_detector" type="static_detector_node" output="screen">
+        <rosparam file="$(find onboard_detector)/cfg/static_detector_param.yaml" command="load"/>
+    </node>
+    
+    <!-- 启动MPC规划器（使用保守的静态障碍物检测器设置）-->
+    <node name="mpc_planner" pkg="trajectory_planner" type="mpc_node" output="screen">
+        <!-- 保守的MPC参数 -->
+        <param name="use_static_detector" value="true"/>
+        <param name="horizon" value="25"/>  <!-- 减小预测范围 -->
+        <param name="static_safety_dist" value="0.8"/>  <!-- 更大的安全距离 -->
+        <param name="dynamic_safety_dist" value="0.6"/>
+        <param name="static_constraint_slack_ratio" value="1.5"/>  <!-- 更大的松弛变量 -->
+        <param name="dynamic_constraint_slack_ratio" value="1.0"/>
+        <param name="z_range_min" value="0.9"/>
+        <param name="z_range_max" value="1.2"/>
+        
+        <!-- 聚类参数 -->
+        <param name="cloud_res" value="0.2"/>
+        <param name="local_cloud_region_x" value="5.0"/>
+        <param name="local_cloud_region_y" value="2.0"/>
+        <param name="ground_height" value="0.4"/>
+        <param name="ceiling_height" value="2.0"/>
+        
+        <!-- 服务重映射 -->
+        <remap from="/static_detector/get_static_obstacles" to="/static_detector/get_static_obstacles"/>
+    </node>
+    
+    <!-- 启动rviz可视化 -->
+    <node if="$(arg show_rviz)" name="rviz" pkg="rviz" type="rviz" 
+          args="-d $(find autonomous_flight)/rviz/intent_mpc_demo.rviz" output="screen"/>
+    
+    <!-- 打印调试信息 -->
+    <node name="debug_info" pkg="rostopic" type="rostopic" 
+          args="echo /static_detector/visualization -n 1" output="screen"/>
+
+</launch> 

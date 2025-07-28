@@ -1,0 +1,8 @@
+prefix=/root/new/catkin_ws/install
+
+Name: remote_control
+Description: Description of remote_control
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

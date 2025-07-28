@@ -1,0 +1,10 @@
+std_msgs/Header header
+string name
+uint32 id
+geometry_msgs/Vector3 position
+geometry_msgs/Vector3 size
+float64 yaw
+string semantic_class
+float64 cost_weight
+float64 safety_distance
+std_msgs/ColorRGBA color 

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="world_file" default="$(find uav_simulator)/worlds/corridor/corridor.world"/>
+    <arg name="show_rviz" default="true"/>
+    
+    <!-- 启动Gazebo仿真环境 -->
+    <include file="$(find uav_simulator)/launch/uav_world.launch">
+        <arg name="world_file" value="$(arg world_file)"/>
+        <arg name="gui" value="true"/>
+    </include>
+    
+    <!-- 启动静态障碍物检测器 -->
+    <include file="$(find onboard_detector)/launch/static_detector.launch">
+        <arg name="config_file" value="$(find onboard_detector)/cfg/static_detector_param.yaml"/>
+    </include>
+    
+    <!-- 启动动态障碍物检测器 -->
+    <include file="$(find onboard_detector)/launch/fake_detector.launch">
+        <arg name="config_file" value="$(find dynamic_predictor)/cfg/fake_detector_param.yaml"/>
+    </include>
+    
+    <!-- 启动MPC规划器（使用静态障碍物检测器）-->
+    <node name="mpc_planner" pkg="trajectory_planner" type="mpc_node" output="screen">
+        <rosparam file="$(find trajectory_planner)/cfg/mpc_static_detector.yaml" command="load"/>
+        <remap from="/static_detector/get_static_obstacles" to="/static_detector/get_static_obstacles"/>
+    </node>
+    
+    <!-- 启动rviz可视化 -->
+    <node if="$(arg show_rviz)" name="rviz" pkg="rviz" type="rviz" 
+          args="-d $(find autonomous_flight)/rviz/intent_mpc_demo.rviz" output="screen"/>
+    
+    <!-- 信息显示 -->
+    <node name="topic_info" pkg="rostopic" type="rostopic" args="echo /static_detector/visualization" output="screen"/>
+</launch> 

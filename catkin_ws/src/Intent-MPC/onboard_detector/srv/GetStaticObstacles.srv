@@ -1,0 +1,15 @@
+# Request
+geometry_msgs/Point current_position
+float64 range
+string semantic_filter  # Optional filter by semantic class (e.g., "WALL", "FURNITURE", empty for all)
+---
+# Response
+# Array of static obstacles using standard ROS messages
+string[] names
+uint32[] ids
+geometry_msgs/Vector3[] positions
+geometry_msgs/Vector3[] sizes
+float64[] yaws
+string[] semantic_classes
+float64[] cost_weights
+float64[] safety_distances 

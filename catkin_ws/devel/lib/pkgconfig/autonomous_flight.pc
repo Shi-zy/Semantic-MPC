@@ -1,0 +1,8 @@
+prefix=/root/new/catkin_ws/devel
+
+Name: autonomous_flight
+Description: Description of autonomous_flight
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

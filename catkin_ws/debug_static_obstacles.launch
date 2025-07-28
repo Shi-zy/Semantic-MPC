@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="world_file" default="$(find uav_simulator)/worlds/corridor/corridor.world"/>
+    <arg name="show_rviz" default="true"/>
+    
+    <!-- 启动Gazebo仿真环境 -->
+    <include file="$(find uav_simulator)/launch/uav_world.launch">
+        <arg name="world_file" value="$(arg world_file)"/>
+        <arg name="gui" value="true"/>
+    </include>
+    
+    <!-- 启动占据地图节点 -->
+    <include file="$(find map_manager)/launch/occupancy_map.launch">
+        <arg name="config_file" value="$(find autonomous_flight)/cfg/mpc_navigation/mapping_param.yaml"/>
+    </include>
+    
+    <!-- 启动假检测器节点 -->
+    <include file="$(find onboard_detector)/launch/fake_detector.launch">
+        <arg name="config_file" value="$(find dynamic_predictor)/cfg/fake_detector_param.yaml"/>
+    </include>
+    
+    <!-- 启动静态障碍物调试节点 -->
+    <node name="static_obstacle_debugger" pkg="autonomous_flight" type="debug_static_obstacles.py" output="screen"/>
+    
+    <!-- 启动rviz可视化 -->
+    <node if="$(arg show_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find autonomous_flight)/rviz/intent_mpc_demo.rviz" output="screen"/>
+    
+    <!-- 添加一些有用的话题信息 -->
+    <node name="topic_info" pkg="rostopic" type="rostopic" args="list" output="screen"/>
+    
+</launch> 
